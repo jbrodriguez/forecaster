@@ -1,0 +1,14 @@
+{
+  "printWidth": 120,
+  "parser": "flow",
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "useTabs": false,
+  "overrides": [
+    {
+      "files": [".prettierrc", ".eslintrc"],
+      "options": { "parser": "json" }
+    }
+  ]
+}
