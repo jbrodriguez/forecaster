@@ -18,17 +18,25 @@ import type { TAppState, TGui } from '../typings'
 import { getNav } from '../modules/nav'
 import { getGui } from '../modules/env'
 
+import NavBar from './navbar'
 import Loading from './loading'
 import Cities from './cities'
 import Search from './search'
 import Welcome from './welcome'
 
-export const Navigator = StackNavigator({
-  Loading: { screen: Loading },
-  Cities: { screen: Cities },
-  Search: { screen: Search },
-  Welcome: { screen: Welcome },
-})
+export const Navigator = StackNavigator(
+  {
+    Loading: { screen: Loading },
+    Cities: { screen: Cities },
+    Search: { screen: Search },
+    Welcome: { screen: Welcome },
+  },
+  {
+    navigationOptions: {
+      header: props => <NavBar {...props} />,
+    },
+  },
+)
 
 type Props = {
   nav: NavigationState,
