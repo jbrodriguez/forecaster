@@ -14,12 +14,10 @@ type Props = {
   search: () => Dispatch<any>,
 }
 
-const HeaderRightBase = ({ gui: { s, c, z }, search }: Props) => (
+const HeaderRightBase = ({ gui: { s, c }, search }: Props) => (
   <View style={[s.flx_row, s.aic]}>
     <TouchableOpacity onPress={search}>
-      <Text fontSize={z.f2} color={c.secondary}>
-        +
-      </Text>
+      <Text style={[s.f2, s.mr2, c.c_secondary]}>+</Text>
     </TouchableOpacity>
   </View>
 )
