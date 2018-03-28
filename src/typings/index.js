@@ -10,6 +10,9 @@ const ActionKey = {
   START: 'forecaster/env/START',
   SETUP: 'forecaster/env/SETUP',
   SET_REFRESHING: 'forecaster/env/SET_REFRESHING',
+  LOOKUP: 'forecaster/env/LOOKUP',
+  SET_SEARCHING: 'forecaster/env/SET_SEARCHING',
+  SET_POTENTIALS: 'forecaster/env/SET_POTENTIALS',
 }
 
 export default ActionKey
@@ -27,9 +30,34 @@ export type TGui = {
   z: any,
 }
 
+export type TCoord = {
+  lat: number,
+  lon: number,
+}
+
+export type TMain = {
+  temp: number,
+  pressure: number,
+  humidity: number,
+  temp_min: number,
+  temp_max: number,
+}
+
+export type TSys = {
+  type: number,
+  id: number,
+  message: number,
+  country: string,
+  sunrise: number,
+  sunset: number,
+}
+
 export type TCity = {
   id: string,
   name: string,
+  coord: TCoord,
+  main: TMain,
+  sys: TSys,
 }
 
 export type TCities = {
@@ -42,6 +70,8 @@ export type TEnvState = {
   version: string,
   gui: TGui,
   isRefreshing: boolean,
+  isSearching: boolean,
+  potentials: TCity[],
 }
 
 export type TModelState = {
@@ -74,4 +104,19 @@ export type ASetup = {
 export type ASetRefreshing = {
   +type: typeof ActionKey.SET_REFRESHING,
   payload: boolean,
+}
+
+export type ALookup = {
+  +type: typeof ActionKey.LOOKUP,
+  payload: string,
+}
+
+export type ASetSearching = {
+  +type: typeof ActionKey.SET_SEARCHING,
+  payload: boolean,
+}
+
+export type ASetPotentials = {
+  +type: typeof ActionKey.SET_POTENTIALS,
+  payload: TCity[],
 }
