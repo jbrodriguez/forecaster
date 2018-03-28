@@ -6,8 +6,10 @@ import { NavigationState } from 'react-navigation'
 // ACTION TYPE KEYS
 const ActionKey = {
   OTHER: '__other__',
+
   START: 'forecaster/env/START',
   SETUP: 'forecaster/env/SETUP',
+  SET_REFRESHING: 'forecaster/env/SET_REFRESHING',
 }
 
 export default ActionKey
@@ -25,16 +27,32 @@ export type TGui = {
   z: any,
 }
 
+export type TCity = {
+  id: string,
+  name: string,
+}
+
+export type TCities = {
+  [id: string]: TCity,
+}
+
 // STORE / STATE
 export type TEnvState = {
   loaded: boolean,
   version: string,
   gui: TGui,
+  isRefreshing: boolean,
+}
+
+export type TModelState = {
+  cities: TCities | {},
+  order: string[],
 }
 
 export type TAppState = {
   env: TEnvState,
   nav: NavigationState,
+  model: TModelState,
 }
 
 export type TStore = ReduxStore<TAppState>
@@ -51,4 +69,9 @@ export type AStart = {
 export type ASetup = {
   +type: typeof ActionKey.SETUP,
   payload: TSetup,
+}
+
+export type ASetRefreshing = {
+  +type: typeof ActionKey.SET_REFRESHING,
+  payload: boolean,
 }
