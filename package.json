@@ -11,6 +11,8 @@
     "flow coverage": "flow coverage"
   },
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
+    "lodash.pick": "^4.4.0",
     "react": "^16.3.0-alpha.1",
     "react-native": "0.54.3",
     "react-native-style-tachyons": "^3.6.0",
@@ -32,6 +34,7 @@
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0",
+    "eslint-plugin-react-native-globals": "^0.1.2",
     "flow-bin": "0.65.0",
     "jest": "22.4.3",
     "react-test-renderer": "^16.3.0-alpha.1"
