@@ -11,10 +11,12 @@ import sagas from './sagas'
 import type { TStore } from './typings'
 import env from './modules/env'
 import nav from './modules/nav'
+import model from './modules/model'
 
 const reducers = combineReducers({
   env,
   nav,
+  model,
 })
 
 const configureStore = (callback: () => void): TStore => {

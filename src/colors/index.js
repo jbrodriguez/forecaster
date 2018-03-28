@@ -14,6 +14,8 @@ const palette = {
   contrast: '#6D6345',
 
   divider: '#1E2934',
+
+  transparent: 'transparent',
 }
 
 const colors = adapter(palette)

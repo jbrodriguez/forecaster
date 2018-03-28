@@ -26,6 +26,21 @@ const reducer = (state: NavigationState = initialState, action: TAction) => {
     case 'Loading':
       nextState = Navigator.router.getStateForAction(NavigationActions.navigate({ routeName: 'Loading' }), state)
       break
+
+    case 'Cities':
+      nextState = Navigator.router.getStateForAction(
+        NavigationActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({ routeName: 'Cities' })],
+        }),
+        state,
+      )
+      break
+
+    case 'Search':
+      nextState = Navigator.router.getStateForAction(NavigationActions.navigate({ routeName: 'Search' }), state)
+      break
+
     case 'Welcome':
       nextState = Navigator.router.getStateForAction(
         NavigationActions.reset({
@@ -35,6 +50,7 @@ const reducer = (state: NavigationState = initialState, action: TAction) => {
         state,
       )
       break
+
     default:
       nextState = Navigator.router.getStateForAction(action, state)
       break
