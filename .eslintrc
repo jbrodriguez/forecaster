@@ -1,7 +1,7 @@
 {
   "parser": "babel-eslint",
   "extends": "airbnb",
-  "plugins": ["react", "flowtype", "jsx-a11y", "import"],
+  "plugins": ["react", "flowtype", "jsx-a11y", "import", "react-native-globals"],
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/forbid-prop-types": [0, { "forbid": [] }],
@@ -16,10 +16,12 @@
         "peerDependencies": false
       }
     ],
+    "jsx-a11y/accessible-emoji": 0,
     "max-len": ["error", { "code": 120 }],
     "semi": ["error", "never"]
   },
   "env": {
-    "jest": true
+    "jest": true,
+    "react-native-globals/all": true
   }
 }
