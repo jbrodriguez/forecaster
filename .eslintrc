@@ -16,6 +16,7 @@
         "peerDependencies": false
       }
     ],
+    "max-len": ["error", { "code": 120 }],
     "semi": ["error", "never"]
   },
   "env": {
