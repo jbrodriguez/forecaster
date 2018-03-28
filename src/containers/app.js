@@ -19,10 +19,14 @@ import { getNav } from '../modules/nav'
 import { getGui } from '../modules/env'
 
 import Loading from './loading'
+import Cities from './cities'
+import Search from './search'
 import Welcome from './welcome'
 
 export const Navigator = StackNavigator({
   Loading: { screen: Loading },
+  Cities: { screen: Cities },
+  Search: { screen: Search },
   Welcome: { screen: Welcome },
 })
 

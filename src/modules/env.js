@@ -7,12 +7,13 @@ import { NavigationActions } from 'react-navigation'
 import Tachyons from 'react-native-style-tachyons'
 
 import ActionKey from '../typings'
-import type { TAppState, TEnvState, AOther, AStart, ASetup, TSetup, TGui } from '../typings'
+import type { TAppState, TEnvState, AOther, AStart, ASetup, TSetup, TGui, ASetRefreshing } from '../typings'
 import colors from '../colors'
 
 // ACTION CREATORS
 export const start = (): AStart => ({ type: ActionKey.START })
 export const setup = (payload: TSetup): ASetup => ({ type: ActionKey.SETUP, payload })
+export const setRefreshing = (payload: boolean): ASetRefreshing => ({ type: ActionKey.SET_REFRESHING, payload })
 
 Tachyons.build({ rem: 16 }, StyleSheet)
 
@@ -21,6 +22,7 @@ const initialState: TEnvState = {
   loaded: false,
   version: '1.0.0',
   gui: { s: Tachyons.styles, c: colors, z: Tachyons.sizes },
+  isRefreshing: false,
 }
 
 type TAction = AOther | ASetup
@@ -34,6 +36,12 @@ const reducer = (state: TEnvState = initialState, action: TAction): TEnvState =>
         loaded: true,
       }
 
+    case ActionKey.SET_REFRESHING:
+      return {
+        ...state,
+        isRefreshing: action.payload,
+      }
+
     default:
       return state
   }
@@ -44,6 +52,7 @@ export default reducer
 // SELECTORS
 export const getLoaded = (state: TAppState): boolean => state.env.loaded
 export const getGui = (state: TAppState): TGui => state.env.gui
+export const isRefreshing = (state: TAppState): boolean => state.env.isRefreshing
 
 // SAGAS
 const SStart = function* GSStart() {
@@ -61,7 +70,7 @@ const SStart = function* GSStart() {
   if (loaded) {
     yield put(NavigationActions.reset({
       index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'Welcome' })],
+      actions: [NavigationActions.navigate({ routeName: 'Cities' })],
     }))
   }
 }
