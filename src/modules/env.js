@@ -21,6 +21,7 @@ import type {
   ASetSearching,
   TCity,
   ASetPotentials,
+  AAddCity,
 } from '../typings'
 import colors from '../colors'
 import { lookupCity } from '../lib/api'
@@ -45,7 +46,7 @@ const initialState: TEnvState = {
   potentials: [], // list of potential cities returned by the api
 }
 
-type TAction = AOther | ASetup
+type TAction = AOther | ASetup | ASetRefreshing | ASetSearching | ASetPotentials | AAddCity
 
 const reducer = (state: TEnvState = initialState, action: TAction): TEnvState => {
   switch (action.type) {
@@ -72,6 +73,12 @@ const reducer = (state: TEnvState = initialState, action: TAction): TEnvState =>
       return {
         ...state,
         potentials: action.payload,
+      }
+
+    case ActionKey.ADD_CITY:
+      return {
+        ...state,
+        potentials: [],
       }
 
     default:
