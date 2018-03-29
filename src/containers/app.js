@@ -23,6 +23,7 @@ import Loading from './loading'
 import Cities from './cities'
 import Search from './search'
 import Welcome from './welcome'
+import City from './city'
 
 export const Navigator = StackNavigator(
   {
@@ -30,6 +31,7 @@ export const Navigator = StackNavigator(
     Cities: { screen: Cities },
     Search: { screen: Search },
     Welcome: { screen: Welcome },
+    City: { screen: City },
   },
   {
     navigationOptions: {

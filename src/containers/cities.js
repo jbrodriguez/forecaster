@@ -3,27 +3,27 @@
 import React, { PureComponent } from 'react'
 import { ListView, View, TouchableOpacity, Text, RefreshControl, Platform } from 'react-native'
 
-// import { bindActionCreators } from 'redux'
+import { bindActionCreators } from 'redux'
 import { connect, Dispatch } from 'react-redux'
+import { NavigationActions } from 'react-navigation'
 
-import type { TCity, TGui, ASetRefreshing } from '../typings'
+import type { TCity, TGui, ASetRefreshing, ASetCurrentCity } from '../typings'
 import { getGui, isRefreshing } from '../modules/env'
-import { citiesByOrder } from '../modules/model'
-// import { ARefresh, ASetCurrent, ADeleteCity, citiesByOrder, refresh, deleteCity } from '../modules/model'
-// import { ARefresh, ASetCurrent, ADeleteCity, citiesByOrder, refresh, deleteCity } from '../modules/model'
+import { citiesByOrder, setCurrentCity } from '../modules/model'
 
 import HeaderRight from './cities.header'
-import City from './city'
+import CityProxy from '../components/cityProxy'
 
 type Props = {
   cities: TCity[],
   gui: TGui,
   refreshing: boolean,
   setRefreshing: (payload: boolean) => ASetRefreshing,
+  setCurrentCity: (payload: number) => ASetCurrentCity,
   // refresh: () => ARefresh,
   // setCurrentCity: (payload: string) => ASetCurrent,
   // deleteCity: (payload: string) => ADeleteServer,
-  dispatch: Dispatch<any>,
+  dispatch: Dispatch,
 }
 
 class Cities extends PureComponent<Props> {
@@ -57,7 +57,21 @@ class Cities extends PureComponent<Props> {
     // this.props.deleteCity(id)
   }
 
-  renderRow = city => <City id={city.id} />
+  goTo = (id: number) => () => {
+    const { cities } = this.props
+
+    const city = cities.find(item => item.id === id)
+
+    // this shouldn't happen, since we're selecting an item from the cities array
+    if (!city) {
+      return
+    }
+
+    this.props.setCurrentCity(id)
+    this.props.dispatch(NavigationActions.navigate({ routeName: 'City', params: { title: city.name } }))
+  }
+
+  renderRow = city => <CityProxy gui={this.props.gui} city={city} goTo={this.goTo} />
 
   renderHidden = (city, secId, rowId, rowMap) => {
     const { gui: { s, c } } = this.props
@@ -128,19 +142,19 @@ class Cities extends PureComponent<Props> {
 const mapStateToProps = state => ({
   cities: citiesByOrder(state),
   gui: getGui(state),
-  isRefreshing: isRefreshing(state),
+  refreshing: isRefreshing(state),
 })
-// const mapDispatchToProps = dispatch => ({
-//   ...bindActionCreators(
-//     {
-//       refresh,
-//       setRefreshing,
-//       deleteServer,
-//     },
-//     dispatch,
-//   ),
-//   dispatch,
-// })
+const mapDispatchToProps = dispatch => ({
+  ...bindActionCreators(
+    {
+      setCurrentCity,
+      // refresh,
+      // setRefreshing,
+      // deleteServer,
+    },
+    dispatch,
+  ),
+  dispatch,
+})
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Cities)
-export default connect(mapStateToProps)(Cities)
+export default connect(mapStateToProps, mapDispatchToProps)(Cities)

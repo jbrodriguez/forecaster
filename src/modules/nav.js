@@ -1,6 +1,6 @@
 // @flow
 
-import { NavigationActions, NavigationState } from 'react-navigation'
+import { NavigationState } from 'react-navigation'
 
 import type { TAppState } from '../typings'
 import { Navigator } from '../containers/app'
@@ -20,42 +20,55 @@ type TAction = {
 }
 
 const reducer = (state: NavigationState = initialState, action: TAction) => {
-  let nextState
+  // let nextState
 
-  switch (action.type) {
-    case 'Loading':
-      nextState = Navigator.router.getStateForAction(NavigationActions.navigate({ routeName: 'Loading' }), state)
-      break
+  // console.log(`action(${JSON.stringify(action)})`)
 
-    case 'Cities':
-      nextState = Navigator.router.getStateForAction(
-        NavigationActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: 'Cities' })],
-        }),
-        state,
-      )
-      break
+  // if (!action.routeName) {
+  //   return nextState || state
+  // }
 
-    case 'Search':
-      nextState = Navigator.router.getStateForAction(NavigationActions.navigate({ routeName: 'Search' }), state)
-      break
+  // switch (action.routeName) {
+  // switch (action.type) {
+  //   case 'Loading':
+  //     nextState = Navigator.router.getStateForAction(NavigationActions.navigate({ routeName: 'Loading' }), state)
+  //     break
 
-    case 'Welcome':
-      nextState = Navigator.router.getStateForAction(
-        NavigationActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: 'Welcome' })],
-        }),
-        state,
-      )
-      break
+  //   case 'Cities':
+  //     nextState = Navigator.router.getStateForAction(
+  //       NavigationActions.reset({
+  //         index: 0,
+  //         actions: [NavigationActions.navigate({ routeName: 'Cities' })],
+  //       }),
+  //       state,
+  //     )
+  //     break
 
-    default:
-      nextState = Navigator.router.getStateForAction(action, state)
-      break
-  }
+  //   case 'Search':
+  //     nextState = Navigator.router.getStateForAction(NavigationActions.navigate({ routeName: 'Search' }), state)
+  //     break
 
+  //   case 'City':
+  //     console.log('navCity')
+  //     nextState = Navigator.router.getStateForAction(NavigationActions.navigate({ routeName: 'City' }), state)
+  //     break
+
+  //   case 'Welcome':
+  //     nextState = Navigator.router.getStateForAction(
+  //       NavigationActions.reset({
+  //         index: 0,
+  //         actions: [NavigationActions.navigate({ routeName: 'Welcome' })],
+  //       }),
+  //       state,
+  //     )
+  //     break
+
+  //   default:
+  //     nextState = Navigator.router.getStateForAction(action, state)
+  //     break
+  // }
+
+  const nextState = Navigator.router.getStateForAction(action, state)
   // Simply return the original `state` if `nextState` is null or undefined.
   return nextState || state
 }
