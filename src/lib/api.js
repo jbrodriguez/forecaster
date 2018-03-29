@@ -1,10 +1,11 @@
 // @flow
 
 import { encode } from './utils'
-import getCityData from './getCityData'
+// import getCityData from './getCityData'
+// import lookupCityData from './lookupCitiData'
 
 // TODO: need to securely handle the key
-const apiKey = ''
+const apiKey = 'b20d1d6a3b21c464c97f24de370a9a01'
 const lookupUrl = 'https://api.openweathermap.org/data/2.5/find?'
 const getUrl = 'https://api.openweathermap.org/data/2.5/weather?'
 
@@ -30,36 +31,36 @@ const checkStatus = (response) => {
 const raiseException = exception => ({ data: null, err: { err_code: exception.code, err_msg: exception.message } })
 
 const lookupCity = (name: string) => {
-  // const params = encode({
-  //   q: name,
-  //   appid: apiKey,
-  // })
+  const params = encode({
+    q: name,
+    appid: apiKey,
+  })
 
-  // const ep = `${lookupUrl}${params}`
+  const ep = `${lookupUrl}${params}`
 
-  // return fetch(ep)
-  //   .then(checkStatus)
-  //   .then(data => ({ data, err: null }))
-  //   .catch(raiseException)
+  return fetch(ep)
+    .then(checkStatus)
+    .then(data => ({ data, err: null }))
+    .catch(raiseException)
 
   // return { data: lookupCitiData, err: null }
 }
 
 const getCity = (id: number) => {
-  // const params = encode({
-  //   id: id.toString(),
-  //   appid: apiKey,
-  // })
+  const params = encode({
+    id: id.toString(),
+    appid: apiKey,
+  })
 
-  // const ep = `${getUrl}${params}`
+  const ep = `${getUrl}${params}`
 
-  // return fetch(ep)
-  //   .then(checkStatus)
-  //   .then(data => ({ data, err: null }))
-  //   .catch(raiseException)
+  return fetch(ep)
+    .then(checkStatus)
+    .then(data => ({ data, err: null }))
+    .catch(raiseException)
 
-  const city = getCityData[id.toString()]
-  return { data: city, err: null }
+  // const city = getCityData[id.toString()]
+  // return { data: city, err: null }
 }
 
 export { lookupCity, getCity } // eslint-disable-line import/prefer-default-export
