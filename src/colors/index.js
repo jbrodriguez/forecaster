@@ -16,6 +16,8 @@ const palette = {
 
   divider: '#1E2934',
 
+  alert: '#BA0B0B',
+
   transparent: 'transparent',
   white: '#ffffff',
 }

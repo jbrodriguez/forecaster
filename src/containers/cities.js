@@ -1,15 +1,16 @@
 // @flow
 
 import React, { PureComponent } from 'react'
-import { ListView, View, TouchableOpacity, Text, RefreshControl, Platform } from 'react-native'
+import { View, TouchableOpacity, Text, RefreshControl, Platform } from 'react-native'
 
 import { bindActionCreators } from 'redux'
 import { connect, Dispatch } from 'react-redux'
 import { NavigationActions } from 'react-navigation'
+import { SwipeListView } from 'react-native-swipe-list-view'
 
-import type { TCity, TGui, ASetRefreshing, ASetCurrentCity } from '../typings'
+import type { TCity, TGui, ASetRefreshing, ASetCurrentCity, ADeleteCity } from '../typings'
 import { getGui, isRefreshing } from '../modules/env'
-import { citiesByOrder, setCurrentCity } from '../modules/model'
+import { citiesByOrder, setCurrentCity, deleteCity } from '../modules/model'
 
 import HeaderRight from './cities.header'
 import CityProxy from '../components/cityProxy'
@@ -20,9 +21,8 @@ type Props = {
   refreshing: boolean,
   setRefreshing: (payload: boolean) => ASetRefreshing,
   setCurrentCity: (payload: number) => ASetCurrentCity,
+  deleteCity: (payload: number) => ADeleteCity,
   // refresh: () => ARefresh,
-  // setCurrentCity: (payload: string) => ASetCurrent,
-  // deleteCity: (payload: string) => ADeleteServer,
   dispatch: Dispatch,
 }
 
@@ -30,18 +30,6 @@ class Cities extends PureComponent<Props> {
   static navigationOptions = {
     title: 'Cities',
     headerRight: <HeaderRight />,
-  }
-
-  ds: any
-  swipeBtn: any
-  swipedId: any
-
-  constructor(props) {
-    super(props)
-
-    this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
-    this.swipeBtn = null
-    this.swipedId = -1
   }
 
   componentDidMount() {
@@ -52,9 +40,9 @@ class Cities extends PureComponent<Props> {
     // this.props.refresh()
   }
 
-  onDelete = (id, row) => () => {
-    // row.closeRow()
-    // this.props.deleteCity(id)
+  onDelete = (id: number, row) => () => {
+    row.closeRow()
+    this.props.deleteCity(id)
   }
 
   goTo = (id: number) => () => {
@@ -71,13 +59,13 @@ class Cities extends PureComponent<Props> {
     this.props.dispatch(NavigationActions.navigate({ routeName: 'City', params: { title: city.name } }))
   }
 
-  renderRow = city => <CityProxy gui={this.props.gui} city={city} goTo={this.goTo} />
+  renderRow = data => <CityProxy gui={this.props.gui} city={data.item} goTo={this.goTo} />
 
-  renderHidden = (city, secId, rowId, rowMap) => {
+  renderHidden = (data, rowMap) => {
     const { gui: { s, c } } = this.props
-    const row = rowMap[`${secId}${rowId}`]
+    const row = rowMap[data.item.id.toString()]
     return (
-      <View style={[s.flx_i, s.flx_row, s.aic, s.jcsb, c.g_transparent]}>
+      <View style={[s.flx_i, s.flx_row, s.aic, s.jcsb, c.g_background]}>
         <TouchableOpacity
           style={[
             s.aic,
@@ -85,13 +73,13 @@ class Cities extends PureComponent<Props> {
             {
               position: 'absolute',
               top: 0,
-              right: 0,
               bottom: 0,
+              left: 0,
               width: 75,
             },
-            c.g_alertBg,
+            c.g_alert,
           ]}
-          onPress={this.onDelete(city.id, row)}
+          onPress={this.onDelete(data.item.id, row)}
         >
           <Text style={[s.f5, c.c_white]}>Delete</Text>
         </TouchableOpacity>
@@ -102,7 +90,6 @@ class Cities extends PureComponent<Props> {
   render() {
     const { cities, gui: { s, c }, refreshing } = this.props
 
-    const dataSource = this.ds.cloneWithRows(cities)
     const bgStyle = Platform.OS === 'ios' ? c.g_transparent : null
 
     if (cities.length === 0) {
@@ -115,12 +102,12 @@ class Cities extends PureComponent<Props> {
 
     return (
       <View style={[s.flx_i, c.g_background]}>
-        <ListView
-          automaticallyAdjustContentInsets={false}
-          dataSource={dataSource}
-          renderRow={this.renderRow}
-          // ref="listview" // eslint-disable-line
-          removeClippedSubviews={false}
+        <SwipeListView
+          useFlatList
+          data={cities}
+          keyExtractor={item => item.id.toString()}
+          renderItem={this.renderRow}
+          renderHiddenItem={this.renderHidden}
           refreshControl={
             <RefreshControl
               style={bgStyle}
@@ -133,6 +120,9 @@ class Cities extends PureComponent<Props> {
               progressBackgroundColor={c.primary}
             />
           }
+          recalculateHiddenLayout
+          leftOpenValue={75}
+          disableLeftSwipe
         />
       </View>
     )
@@ -148,9 +138,9 @@ const mapDispatchToProps = dispatch => ({
   ...bindActionCreators(
     {
       setCurrentCity,
+      deleteCity,
       // refresh,
       // setRefreshing,
-      // deleteServer,
     },
     dispatch,
   ),

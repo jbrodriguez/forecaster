@@ -1,11 +1,12 @@
 // @flow
 
 import ActionKey from '../typings'
-import type { TModelState, AOther, TAppState, TCity, AAddCity, ASetCurrentCity } from '../typings'
+import type { TModelState, AOther, TAppState, TCity, AAddCity, ASetCurrentCity, ADeleteCity } from '../typings'
 
 // ACTION CREATORS
 export const addCity = (payload: TCity): AAddCity => ({ type: ActionKey.ADD_CITY, payload })
 export const setCurrentCity = (payload: number): ASetCurrentCity => ({ type: ActionKey.SET_CURRENT_CITY, payload })
+export const deleteCity = (payload: number): ADeleteCity => ({ type: ActionKey.DELETE_CITY, payload })
 
 // REDUCER
 const initialState: TModelState = {
@@ -14,7 +15,7 @@ const initialState: TModelState = {
   current: 0,
 }
 
-type TAction = AOther | AAddCity
+type TAction = AOther | AAddCity | ASetCurrentCity | ADeleteCity
 
 const reducer = (state: TModelState = initialState, action: TAction): TModelState => {
   switch (action.type) {
@@ -30,13 +31,14 @@ const reducer = (state: TModelState = initialState, action: TAction): TModelStat
         order = [...state.order.slice(1), action.payload.id]
 
         // remove id from the cities map
-        const { [id]: value, ...other } = state.cities
+        const key = id.toString()
+        const { [key]: value, ...other } = state.cities
 
         // add city to the map
-        cities = { ...other, [action.payload.id]: action.payload }
+        cities = { ...other, [action.payload.id.toString()]: action.payload }
       } else {
         order = [...state.order, action.payload.id]
-        cities = { ...state.cities, [action.payload.id]: action.payload }
+        cities = { ...state.cities, [action.payload.id.toString()]: action.payload }
       }
 
       const current = action.payload.id
@@ -46,6 +48,33 @@ const reducer = (state: TModelState = initialState, action: TAction): TModelStat
         cities,
         order,
         current,
+      }
+    }
+
+    case ActionKey.SET_CURRENT_CITY:
+      return {
+        ...state,
+        current: action.payload,
+      }
+
+    case ActionKey.DELETE_CITY: {
+      const id = action.payload
+
+      const index = state.order.findIndex(cityId => cityId === id)
+      const order = [...state.order.slice(0, index), ...state.order.slice(index + 1)]
+
+      // remove id from the cities map
+      const key = id.toString()
+      const { [key]: value, ...other } = state.cities
+
+      // return cities without the id
+      const cities = { ...other }
+
+      return {
+        ...state,
+        order,
+        cities,
+        current: 0,
       }
     }
 

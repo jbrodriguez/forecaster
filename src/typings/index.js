@@ -16,6 +16,7 @@ const ActionKey = {
 
   ADD_CITY: 'forecaster/model/ADD_CITY',
   SET_CURRENT_CITY: 'forecaster/model/SET_CURRENT_CITY',
+  DELETE_CITY: 'forecaster/model/DELETE_CITY',
 }
 
 export default ActionKey
@@ -64,7 +65,7 @@ export type TCity = {
 }
 
 export type TCities = {
-  [id: number]: TCity,
+  [id: string]: TCity,
 }
 
 export type TMeasure = {
@@ -137,5 +138,10 @@ export type AAddCity = {
 
 export type ASetCurrentCity = {
   +type: typeof ActionKey.SET_CURRENT_CITY,
+  payload: number,
+}
+
+export type ADeleteCity = {
+  +type: typeof ActionKey.DELETE_CITY,
   payload: number,
 }
