@@ -43,6 +43,17 @@ const reducer = (state: TModelState = initialState, action: TAction): TModelStat
       let cities
       let order
 
+      // it the city is already present, let's just do a 'refresh'
+      if (state.cities[action.payload.id.toString()]) {
+        return {
+          ...state,
+          cities: {
+            ...state.cities,
+            [action.payload.id.toString()]: action.payload,
+          },
+        }
+      }
+
       if (state.order.length === 5) {
         // get id of the first city (fir element of the array)
         const id = state.order[0]
