@@ -1,10 +1,11 @@
 // @flow
 
 import ActionKey from '../typings'
-import type { TModelState, AOther, TAppState, TCity, AAddCity } from '../typings'
+import type { TModelState, AOther, TAppState, TCity, AAddCity, ASetCurrentCity } from '../typings'
 
 // ACTION CREATORS
 export const addCity = (payload: TCity): AAddCity => ({ type: ActionKey.ADD_CITY, payload })
+export const setCurrentCity = (payload: number): ASetCurrentCity => ({ type: ActionKey.SET_CURRENT_CITY, payload })
 
 // REDUCER
 const initialState: TModelState = {
@@ -57,5 +58,6 @@ export default reducer
 
 // SELECTORS
 export const citiesByOrder = (state: TAppState): TCity[] => state.model.order.map(id => state.model.cities[id])
+export const getCurrent = (state: TAppState): TCity => state.model.cities[state.model.current]
 
 // SAGAS

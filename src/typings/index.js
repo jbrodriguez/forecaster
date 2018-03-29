@@ -15,6 +15,7 @@ const ActionKey = {
   SET_POTENTIALS: 'forecaster/env/SET_POTENTIALS',
 
   ADD_CITY: 'forecaster/model/ADD_CITY',
+  SET_CURRENT_CITY: 'forecaster/model/SET_CURRENT_CITY',
 }
 
 export default ActionKey
@@ -64,6 +65,11 @@ export type TCity = {
 
 export type TCities = {
   [id: number]: TCity,
+}
+
+export type TMeasure = {
+  value: string,
+  unit: string,
 }
 
 // STORE / STATE
@@ -127,4 +133,9 @@ export type ASetPotentials = {
 export type AAddCity = {
   +type: typeof ActionKey.ADD_CITY,
   payload: TCity,
+}
+
+export type ASetCurrentCity = {
+  +type: typeof ActionKey.SET_CURRENT_CITY,
+  payload: number,
 }
