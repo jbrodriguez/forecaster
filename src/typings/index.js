@@ -17,6 +17,8 @@ const ActionKey = {
   ADD_CITY: 'forecaster/model/ADD_CITY',
   SET_CURRENT_CITY: 'forecaster/model/SET_CURRENT_CITY',
   DELETE_CITY: 'forecaster/model/DELETE_CITY',
+  REFRESH_ALL: 'forecaster/model/REFRESH_ALL',
+  SET_CITY: 'forecaster/model/SET_CITY',
 }
 
 export default ActionKey
@@ -71,6 +73,11 @@ export type TCities = {
 export type TMeasure = {
   value: string,
   unit: string,
+}
+
+export type TSetCityArg = {
+  id: number,
+  city: TCity,
 }
 
 // STORE / STATE
@@ -144,4 +151,13 @@ export type ASetCurrentCity = {
 export type ADeleteCity = {
   +type: typeof ActionKey.DELETE_CITY,
   payload: number,
+}
+
+export type ARefreshAll = {
+  +type: typeof ActionKey.REFRESH_ALL,
+}
+
+export type ASetCity = {
+  +type: typeof ActionKey.SET_CITY,
+  payload: TSetCityArg,
 }

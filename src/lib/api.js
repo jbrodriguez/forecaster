@@ -1,11 +1,12 @@
 // @flow
 
 import { encode } from './utils'
+import getCityData from './getCityData'
 
 // TODO: need to securely handle the key
 const apiKey = ''
 const lookupUrl = 'https://api.openweathermap.org/data/2.5/find?'
-// const locateEp = 'https://api.openweathermap.org/data/2.5/weather?'
+const getUrl = 'https://api.openweathermap.org/data/2.5/weather?'
 
 function CodeException(message, code) {
   this.name = 'CodeException'
@@ -253,4 +254,21 @@ const lookupCity = (name: string) => {
   return { data, err }
 }
 
-export { lookupCity } // eslint-disable-line import/prefer-default-export
+const getCity = (id: number) => {
+  // const params = encode({
+  //   id: id.toString(),
+  //   appid: apiKey,
+  // })
+
+  // const ep = `${lookupUrl}${params}`
+
+  // return fetch(ep)
+  //   .then(checkStatus)
+  //   .then(data => ({ data, err: null }))
+  //   .catch(raiseException)
+
+  const city = getCityData[id.toString()]
+  return { data: city, err: null }
+}
+
+export { lookupCity, getCity } // eslint-disable-line import/prefer-default-export

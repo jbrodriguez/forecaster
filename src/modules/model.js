@@ -1,12 +1,30 @@
 // @flow
 
+import { takeLatest, put, select, call, fork, all } from 'redux-saga/effects'
+import pick from 'lodash.pick'
+
 import ActionKey from '../typings'
-import type { TModelState, AOther, TAppState, TCity, AAddCity, ASetCurrentCity, ADeleteCity } from '../typings'
+import type {
+  TModelState,
+  AOther,
+  TAppState,
+  TCity,
+  AAddCity,
+  ASetCurrentCity,
+  ADeleteCity,
+  ARefreshAll,
+  TSetCityArg,
+  ASetCity,
+} from '../typings'
+import { getCity } from '../lib/api'
 
 // ACTION CREATORS
+
 export const addCity = (payload: TCity): AAddCity => ({ type: ActionKey.ADD_CITY, payload })
 export const setCurrentCity = (payload: number): ASetCurrentCity => ({ type: ActionKey.SET_CURRENT_CITY, payload })
 export const deleteCity = (payload: number): ADeleteCity => ({ type: ActionKey.DELETE_CITY, payload })
+export const refreshAll = (): ARefreshAll => ({ type: ActionKey.REFRESH_ALL })
+export const setCity = (payload: TSetCityArg): ASetCity => ({ type: ActionKey.SET_CITY, payload })
 
 // REDUCER
 const initialState: TModelState = {
@@ -15,7 +33,7 @@ const initialState: TModelState = {
   current: 0,
 }
 
-type TAction = AOther | AAddCity | ASetCurrentCity | ADeleteCity
+type TAction = AOther | AAddCity | ASetCurrentCity | ADeleteCity | ASetCity
 
 const reducer = (state: TModelState = initialState, action: TAction): TModelState => {
   switch (action.type) {
@@ -78,6 +96,15 @@ const reducer = (state: TModelState = initialState, action: TAction): TModelStat
       }
     }
 
+    case ActionKey.SET_CITY:
+      return {
+        ...state,
+        cities: {
+          ...state.cities,
+          [action.payload.id.toString()]: action.payload.city,
+        },
+      }
+
     default:
       return state
   }
@@ -87,6 +114,32 @@ export default reducer
 
 // SELECTORS
 export const citiesByOrder = (state: TAppState): TCity[] => state.model.order.map(id => state.model.cities[id])
-export const getCurrent = (state: TAppState): TCity => state.model.cities[state.model.current]
+export const getCurrent = (state: TAppState): TCity => state.model.cities[state.model.current.toString()]
+export const getIds = (state: TAppState): number[] => state.model.order
 
 // SAGAS
+function* refreshCity(id: number) {
+  const result = yield call(getCity, id)
+  if (result.err) {
+    // TODO: handle error here, set an error prop to show a toast
+    // yield put(setRefreshing(false))
+    return
+  }
+
+  const city = pick(result.data, ['id', 'name', 'coord', 'main', 'sys'])
+
+  yield put(setCity({ id, city }))
+}
+
+// Refresh data for all the cities (this is usually called from the Cities screen)
+const SRefreshAll = function* GRefreshAll() {
+  const cityIds = yield select(getIds)
+
+  const calls = cityIds.map(id => fork(refreshCity, id))
+
+  yield all(calls)
+}
+
+export const sagas = {
+  refreshAll: takeLatest(ActionKey.REFRESH_ALL, SRefreshAll),
+}

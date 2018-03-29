@@ -8,9 +8,9 @@ import { connect, Dispatch } from 'react-redux'
 import { NavigationActions } from 'react-navigation'
 import { SwipeListView } from 'react-native-swipe-list-view'
 
-import type { TCity, TGui, ASetRefreshing, ASetCurrentCity, ADeleteCity } from '../typings'
+import type { TCity, TGui, ASetRefreshing, ASetCurrentCity, ADeleteCity, ARefreshAll } from '../typings'
 import { getGui, isRefreshing } from '../modules/env'
-import { citiesByOrder, setCurrentCity, deleteCity } from '../modules/model'
+import { citiesByOrder, setCurrentCity, deleteCity, refreshAll } from '../modules/model'
 
 import HeaderRight from './cities.header'
 import CityProxy from '../components/cityProxy'
@@ -22,7 +22,7 @@ type Props = {
   setRefreshing: (payload: boolean) => ASetRefreshing,
   setCurrentCity: (payload: number) => ASetCurrentCity,
   deleteCity: (payload: number) => ADeleteCity,
-  // refresh: () => ARefresh,
+  refreshAll: () => ARefreshAll,
   dispatch: Dispatch,
 }
 
@@ -37,7 +37,7 @@ class Cities extends PureComponent<Props> {
   }
 
   onRefresh = () => {
-    // this.props.refresh()
+    this.props.refreshAll()
   }
 
   onDelete = (id: number, row) => () => {
@@ -139,7 +139,7 @@ const mapDispatchToProps = dispatch => ({
     {
       setCurrentCity,
       deleteCity,
-      // refresh,
+      refreshAll,
       // setRefreshing,
     },
     dispatch,
