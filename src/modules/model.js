@@ -126,7 +126,8 @@ const reducer = (state: TModelState = initialState, action: TAction): TModelStat
 export default reducer
 
 // SELECTORS
-export const citiesByOrder = (state: TAppState): TCity[] => state.model.order.map(id => state.model.cities[id])
+export const citiesByOrder = (state: TAppState): TCity[] =>
+  state.model.order.map(id => state.model.cities[id.toString()])
 export const getCurrent = (state: TAppState): TCity => state.model.cities[state.model.current.toString()]
 export const getIds = (state: TAppState): number[] => state.model.order
 
