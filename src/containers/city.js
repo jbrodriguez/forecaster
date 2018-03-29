@@ -6,8 +6,8 @@ import { ScrollView, View, RefreshControl, Platform, Text } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import type { TGui, TAppState, TCity } from '../typings'
-import { getCurrent } from '../modules/model'
+import type { TGui, TAppState, TCity, ARefreshCity } from '../typings'
+import { getCurrent, refreshCity } from '../modules/model'
 import { getGui, isRefreshing } from '../modules/env'
 
 import Gauge from '../components/gauge'
@@ -16,6 +16,7 @@ type Props = {
   gui: TGui,
   city: TCity,
   refreshing: boolean,
+  refreshCity: (payload: number) => ARefreshCity,
 }
 
 class City extends PureComponent<Props> {
@@ -23,7 +24,10 @@ class City extends PureComponent<Props> {
     title: navigation.state.params.title,
   })
 
-  onRefresh = () => {}
+  onRefresh = () => {
+    const { city } = this.props
+    this.props.refreshCity(city.id)
+  }
 
   render() {
     const { gui: { s, c }, refreshing, city } = this.props
@@ -89,7 +93,6 @@ const mapStateToProps = (state: TAppState) => ({
   gui: getGui(state),
   refreshing: isRefreshing(state),
 })
-// const mapDispatchToProps = dispatch => bindActionCreators({ bgRefresh }, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({ refreshCity }, dispatch)
 
-export default connect(mapStateToProps)(City)
-// export default connect(mapStateToProps, mapDispatchToProps)(City)
+export default connect(mapStateToProps, mapDispatchToProps)(City)

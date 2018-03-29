@@ -15,6 +15,7 @@ import type {
   ARefreshAll,
   TSetCityArg,
   ASetCity,
+  ARefreshCity,
 } from '../typings'
 import { getCity } from '../lib/api'
 
@@ -25,6 +26,7 @@ export const setCurrentCity = (payload: number): ASetCurrentCity => ({ type: Act
 export const deleteCity = (payload: number): ADeleteCity => ({ type: ActionKey.DELETE_CITY, payload })
 export const refreshAll = (): ARefreshAll => ({ type: ActionKey.REFRESH_ALL })
 export const setCity = (payload: TSetCityArg): ASetCity => ({ type: ActionKey.SET_CITY, payload })
+export const refreshCity = (payload: number): ARefreshCity => ({ type: ActionKey.REFRESH_CITY, payload })
 
 // REDUCER
 const initialState: TModelState = {
@@ -118,7 +120,7 @@ export const getCurrent = (state: TAppState): TCity => state.model.cities[state.
 export const getIds = (state: TAppState): number[] => state.model.order
 
 // SAGAS
-function* refreshCity(id: number) {
+function* refreshOne(id: number) {
   const result = yield call(getCity, id)
   if (result.err) {
     // TODO: handle error here, set an error prop to show a toast
@@ -131,15 +133,22 @@ function* refreshCity(id: number) {
   yield put(setCity({ id, city }))
 }
 
+// Refresh data for one city (this is usually called from the City screen)
+const SRefreshCity = function* GRefreshCity(action: ARefreshCity) {
+  const id = action.payload
+  yield call(refreshOne, id)
+}
+
 // Refresh data for all the cities (this is usually called from the Cities screen)
 const SRefreshAll = function* GRefreshAll() {
   const cityIds = yield select(getIds)
 
-  const calls = cityIds.map(id => fork(refreshCity, id))
+  const calls = cityIds.map(id => fork(refreshOne, id))
 
   yield all(calls)
 }
 
 export const sagas = {
   refreshAll: takeLatest(ActionKey.REFRESH_ALL, SRefreshAll),
+  refreshCity: takeLatest(ActionKey.REFRESH_CITY, SRefreshCity),
 }

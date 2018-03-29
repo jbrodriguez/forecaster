@@ -9,6 +9,7 @@ const sagas = function* GSagas(): any {
   yield env.lookup
 
   yield model.refreshAll
+  yield model.refreshCity
 }
 
 export default sagas

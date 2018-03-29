@@ -260,7 +260,7 @@ const getCity = (id: number) => {
   //   appid: apiKey,
   // })
 
-  // const ep = `${lookupUrl}${params}`
+  // const ep = `${getUrl}${params}`
 
   // return fetch(ep)
   //   .then(checkStatus)
