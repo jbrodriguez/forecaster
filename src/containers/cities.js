@@ -23,7 +23,7 @@ type Props = {
   // refresh: () => ARefresh,
   // setCurrentCity: (payload: string) => ASetCurrent,
   // deleteCity: (payload: string) => ADeleteServer,
-  dispatch: Dispatch<any>,
+  dispatch: Dispatch,
 }
 
 class Cities extends PureComponent<Props> {
@@ -128,7 +128,7 @@ class Cities extends PureComponent<Props> {
 const mapStateToProps = state => ({
   cities: citiesByOrder(state),
   gui: getGui(state),
-  isRefreshing: isRefreshing(state),
+  refreshing: isRefreshing(state),
 })
 // const mapDispatchToProps = dispatch => ({
 //   ...bindActionCreators(
