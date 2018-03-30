@@ -22,7 +22,7 @@ const HeaderRightBase = ({ gui: { s, c }, search, settings }: Props) => (
     </TouchableOpacity>
     <View style={s.mr2} />
     <TouchableOpacity onPress={settings}>
-      <Text style={[s.f4, s.mr2, c.c_secondary]}>S</Text>
+      <Text style={[s.f2, s.mr2, c.c_secondary]}>s</Text>
     </TouchableOpacity>
   </View>
 )
