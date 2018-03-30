@@ -7,16 +7,20 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import MapView, { Marker } from 'react-native-maps'
 
-import type { TGui, TAppState, TCity, ARefreshCity } from '../typings'
+import type { TGui, TAppState, TCity, ARefreshCity, TTempUnit } from '../typings'
 import { getCurrent, refreshCity } from '../modules/model'
 import { getGui, isRefreshing } from '../modules/env'
+import { getTempUnit } from '../modules/settings'
 
 import Gauge from '../components/gauge'
+
+import { convertTemp } from '../lib/utils'
 
 type Props = {
   gui: TGui,
   city: TCity,
   refreshing: boolean,
+  tempUnit: TTempUnit,
   refreshCity: (payload: number) => ARefreshCity,
 }
 
@@ -31,9 +35,15 @@ class City extends PureComponent<Props> {
   }
 
   render() {
-    const { gui: { s, c }, refreshing, city } = this.props
+    const { gui: { s, c }, refreshing, city, tempUnit } = this.props
 
     const bgStyle = Platform.OS === 'ios' ? c.g_transparent : null
+
+    const temp = convertTemp(city.main.temp, tempUnit)
+    const min = convertTemp(city.main.temp_min, tempUnit)
+    const max = convertTemp(city.main.temp_max, tempUnit)
+
+    const unitIcon = tempUnit === 'metric' ? '℃' : '℉'
 
     return (
       <ScrollView
@@ -53,24 +63,16 @@ class City extends PureComponent<Props> {
       >
         <View style={[s.jcsb, s.pa2]}>
           <View style={[s.flx_row, s.aic, s.jcsb]}>
-            <Gauge
-              gui={this.props.gui}
-              measure={{ value: city.main.temp_min.toString(), unit: 'S' }}
-              caption="min temp."
-            />
+            <Gauge gui={this.props.gui} measure={{ value: min.toString(), unit: unitIcon }} caption="min" />
 
             <Gauge
               gui={this.props.gui}
-              measure={{ value: city.main.temp.toString(), unit: '℃' }}
+              measure={{ value: temp.toString(), unit: unitIcon }}
               caption="TEMPERATURE"
               hero
             />
 
-            <Gauge
-              gui={this.props.gui}
-              measure={{ value: city.main.temp_max.toString(), unit: 'S' }}
-              caption="max temp."
-            />
+            <Gauge gui={this.props.gui} measure={{ value: max.toString(), unit: unitIcon }} caption="max" />
           </View>
 
           <View style={[s.flx_row, s.aic, s.jcsb, s.mt3]}>
@@ -111,6 +113,7 @@ const mapStateToProps = (state: TAppState) => ({
   city: getCurrent(state),
   gui: getGui(state),
   refreshing: isRefreshing(state),
+  tempUnit: getTempUnit(state),
 })
 const mapDispatchToProps = dispatch => bindActionCreators({ refreshCity }, dispatch)
 

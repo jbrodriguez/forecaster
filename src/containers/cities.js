@@ -8,9 +8,10 @@ import { connect, Dispatch } from 'react-redux'
 import { NavigationActions } from 'react-navigation'
 import { SwipeListView } from 'react-native-swipe-list-view'
 
-import type { TCity, TGui, ASetRefreshing, ASetCurrentCity, ADeleteCity, ARefreshAll } from '../typings'
+import type { TCity, TGui, ASetRefreshing, ASetCurrentCity, ADeleteCity, ARefreshAll, TTempUnit } from '../typings'
 import { getGui, isRefreshing } from '../modules/env'
 import { citiesByOrder, setCurrentCity, deleteCity, refreshAll } from '../modules/model'
+import { getTempUnit } from '../modules/settings'
 
 import HeaderRight from './cities.header'
 import CityProxy from '../components/cityProxy'
@@ -19,6 +20,7 @@ type Props = {
   cities: TCity[],
   gui: TGui,
   refreshing: boolean,
+  tempUnit: TTempUnit,
   setRefreshing: (payload: boolean) => ASetRefreshing,
   setCurrentCity: (payload: number) => ASetCurrentCity,
   deleteCity: (payload: number) => ADeleteCity,
@@ -59,7 +61,7 @@ class Cities extends PureComponent<Props> {
     this.props.dispatch(NavigationActions.navigate({ routeName: 'City', params: { title: city.name } }))
   }
 
-  renderRow = data => <CityProxy gui={this.props.gui} city={data.item} goTo={this.goTo} />
+  renderRow = data => <CityProxy gui={this.props.gui} city={data.item} goTo={this.goTo} unit={this.props.tempUnit} />
 
   renderHidden = (data, rowMap) => {
     const { gui: { s, c } } = this.props
@@ -133,6 +135,7 @@ const mapStateToProps = state => ({
   cities: citiesByOrder(state),
   gui: getGui(state),
   refreshing: isRefreshing(state),
+  tempUnit: getTempUnit(state),
 })
 const mapDispatchToProps = dispatch => ({
   ...bindActionCreators(

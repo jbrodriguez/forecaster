@@ -1,5 +1,7 @@
 // @flow
 
+import { TTempUnit } from '../typings'
+
 const find = /[!'()~]|%20|%00/g
 const replace = {
   '!': '%21',
@@ -17,11 +19,22 @@ const encoder = str => encodeURIComponent(str).replace(find, replacer)
 const encode = (dict: { [key: string]: string }) => {
   const query: string[] = []
 
-  Object.keys(dict).forEach((key) => {
-    query.push(`${encoder(key)}=${encoder(dict[key])}`)
-  })
+  Object.keys(dict).forEach(key => query.push(`${encoder(key)}=${encoder(dict[key])}`))
 
   return query.join('&')
 }
 
-export { encode } // eslint-disable-line import/prefer-default-export
+const convertTemp = (temp: number, unit: TTempUnit): number => {
+  switch (unit) {
+    case 'metric':
+      return Math.round(temp - 273.15)
+
+    case 'imperial':
+      return Math.round(((temp - 273.15) * (9 / 5)) + 32) // prettier-ignore
+
+    default:
+      return Math.round(temp)
+  }
+}
+
+export { encode, convertTemp } // eslint-disable-line import/prefer-default-export
