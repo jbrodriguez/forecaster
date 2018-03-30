@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`settings/action creators creates setTempUnit 1`] = `
+Object {
+  "payload": "imperial",
+  "type": "forecaster/settings/SET_TEMP_UNIT",
+}
+`;
+
+exports[`settings/reducer handles setTempUnit/imperial 1`] = `
+Object {
+  "tempUnit": "imperial",
+}
+`;
+
+exports[`settings/reducer handles setTempUnit/metric 1`] = `
+Object {
+  "tempUnit": "metric",
+}
+`;
+
+exports[`settings/reducer return the same state on unhandled action 1`] = `
+Object {
+  "tempUnit": "metric",
+}
+`;
