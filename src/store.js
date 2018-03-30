@@ -28,7 +28,7 @@ const configureStore = (callback: () => void): TStore => {
     storage: AsyncStorage,
     version: 0,
     throttle: 1000,
-    blacklist: ['env', 'nav', 'model'], // temporarily blacklist model for testing purposes
+    blacklist: ['env', 'nav'],
   }
 
   const reducer = persistReducer(config, reducers)
