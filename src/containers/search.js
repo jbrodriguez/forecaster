@@ -89,25 +89,22 @@ class Search extends PureComponent<Props, State> {
           />
           {searching && (
             <View style={[s.ml2]}>
-              <ActivityIndicator size="small" />{' '}
+              <ActivityIndicator size="small" />
             </View>
           )}
         </View>
         <FlatList
           data={potentials}
           keyExtractor={item => item.id.toString()}
-          renderItem={(props) => {
-            const { item } = props
-            return (
-              <Touchable id={item.id} disabled={false} goTo={this.goTo}>
-                <View key={item.id} style={[s.pa2, { borderBottomWidth: 1, borderBottomColor: c.divider }]}>
-                  <Text style={[s.f4, c.c_secondary]}>
-                    {item.name}, {item.sys.country}
-                  </Text>
-                </View>
-              </Touchable>
-            )
-          }}
+          renderItem={({ item }) => (
+            <Touchable id={item.id} disabled={false} goTo={this.goTo}>
+              <View key={item.id} style={[s.pa2, { borderBottomWidth: 1, borderBottomColor: c.divider }]}>
+                <Text style={[s.f4, c.c_secondary]}>
+                  {item.name}, {item.sys.country}
+                </Text>
+              </View>
+            </Touchable>
+          )}
         />
       </View>
     )
