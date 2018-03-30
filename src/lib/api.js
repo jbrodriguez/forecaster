@@ -15,7 +15,7 @@ function CodeException(message, code) {
   this.message = message
 }
 
-const checkStatus = (response) => {
+const checkStatus = response => {
   switch (response.status) {
     case 200:
       return response.json()
@@ -46,9 +46,9 @@ const lookupCity = (name: string) => {
   // return { data: lookupCitiData, err: null }
 }
 
-const getCity = (id: number) => {
+const getCity = (id: string) => {
   const params = encode({
-    id: id.toString(),
+    id,
     appid: apiKey,
   })
 

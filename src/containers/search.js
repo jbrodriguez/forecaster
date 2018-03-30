@@ -44,7 +44,7 @@ class Search extends PureComponent<Props, State> {
   onChangeText = value => this.setState({ name: value }, () => this.onLocate(value))
 
   // add the server to the list, reset search box and navigate to the City screen
-  goTo = (id: number) => () => {
+  goTo = (id: string) => () => {
     const { potentials } = this.props
 
     const city = potentials.find(potential => potential.id === id)
@@ -95,7 +95,7 @@ class Search extends PureComponent<Props, State> {
         </View>
         <FlatList
           data={potentials}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <Touchable id={item.id} disabled={false} goTo={this.goTo}>
               <View key={item.id} style={[s.pa2, { borderBottomWidth: 1, borderBottomColor: c.divider }]}>

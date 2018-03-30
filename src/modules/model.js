@@ -22,17 +22,17 @@ import { getCity } from '../lib/api'
 // ACTION CREATORS
 
 export const addCity = (payload: TCity): AAddCity => ({ type: ActionKey.ADD_CITY, payload })
-export const setCurrentCity = (payload: number): ASetCurrentCity => ({ type: ActionKey.SET_CURRENT_CITY, payload })
-export const deleteCity = (payload: number): ADeleteCity => ({ type: ActionKey.DELETE_CITY, payload })
+export const setCurrentCity = (payload: string): ASetCurrentCity => ({ type: ActionKey.SET_CURRENT_CITY, payload })
+export const deleteCity = (payload: string): ADeleteCity => ({ type: ActionKey.DELETE_CITY, payload })
 export const refreshAll = (): ARefreshAll => ({ type: ActionKey.REFRESH_ALL })
 export const setCity = (payload: TSetCityArg): ASetCity => ({ type: ActionKey.SET_CITY, payload })
-export const refreshCity = (payload: number): ARefreshCity => ({ type: ActionKey.REFRESH_CITY, payload })
+export const refreshCity = (payload: string): ARefreshCity => ({ type: ActionKey.REFRESH_CITY, payload })
 
 // REDUCER
 const initialState: TModelState = {
   cities: {},
   order: [],
-  current: 0,
+  current: '',
 }
 
 type TAction = AOther | AAddCity | ASetCurrentCity | ADeleteCity | ASetCity
@@ -44,12 +44,12 @@ const reducer = (state: TModelState = initialState, action: TAction): TModelStat
       let order
 
       // it the city is already present, let's just do a 'refresh'
-      if (state.cities[action.payload.id.toString()]) {
+      if (state.cities[action.payload.id]) {
         return {
           ...state,
           cities: {
             ...state.cities,
-            [action.payload.id.toString()]: action.payload,
+            [action.payload.id]: action.payload,
           },
         }
       }
@@ -62,14 +62,13 @@ const reducer = (state: TModelState = initialState, action: TAction): TModelStat
         order = [...state.order.slice(1), action.payload.id]
 
         // remove id from the cities map
-        const key = id.toString()
-        const { [key]: value, ...other } = state.cities
+        const { [id]: value, ...other } = state.cities
 
         // add city to the map
-        cities = { ...other, [action.payload.id.toString()]: action.payload }
+        cities = { ...other, [action.payload.id]: action.payload }
       } else {
         order = [...state.order, action.payload.id]
-        cities = { ...state.cities, [action.payload.id.toString()]: action.payload }
+        cities = { ...state.cities, [action.payload.id]: action.payload }
       }
 
       const current = action.payload.id
@@ -95,8 +94,7 @@ const reducer = (state: TModelState = initialState, action: TAction): TModelStat
       const order = [...state.order.slice(0, index), ...state.order.slice(index + 1)]
 
       // remove id from the cities map
-      const key = id.toString()
-      const { [key]: value, ...other } = state.cities
+      const { [id]: value, ...other } = state.cities
 
       // return cities without the id
       const cities = { ...other }
@@ -105,7 +103,7 @@ const reducer = (state: TModelState = initialState, action: TAction): TModelStat
         ...state,
         order,
         cities,
-        current: 0,
+        current: '',
       }
     }
 
@@ -114,7 +112,7 @@ const reducer = (state: TModelState = initialState, action: TAction): TModelStat
         ...state,
         cities: {
           ...state.cities,
-          [action.payload.id.toString()]: action.payload.city,
+          [action.payload.id]: action.payload.city,
         },
       }
 
@@ -126,21 +124,21 @@ const reducer = (state: TModelState = initialState, action: TAction): TModelStat
 export default reducer
 
 // SELECTORS
-export const citiesByOrder = (state: TAppState): TCity[] =>
-  state.model.order.map(id => state.model.cities[id.toString()])
-export const getCurrent = (state: TAppState): TCity => state.model.cities[state.model.current.toString()]
-export const getIds = (state: TAppState): number[] => state.model.order
+export const citiesByOrder = (state: TAppState): TCity[] => state.model.order.map(id => state.model.cities[id])
+export const getCurrent = (state: TAppState): TCity => state.model.cities[state.model.current]
+export const getIds = (state: TAppState): string[] => state.model.order
 
 // SAGAS
-function* refreshOne(id: number) {
-  const result = yield call(getCity, id)
+function* refreshOne(cityId: string) {
+  const result = yield call(getCity, cityId)
   if (result.err) {
     // TODO: handle error here, set an error prop to show a toast
     // yield put(setRefreshing(false))
     return
   }
 
-  const city = pick(result.data, ['id', 'name', 'coord', 'main', 'sys'])
+  const { id, ...rest } = pick(result.data, ['id', 'name', 'coord', 'main', 'sys'])
+  const city = { id: id.toString(), ...rest }
 
   yield put(setCity({ id, city }))
 }
