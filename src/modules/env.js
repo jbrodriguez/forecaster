@@ -40,7 +40,7 @@ Tachyons.build({ rem: 16 }, StyleSheet)
 // REDUCER
 export const initialState: TEnvState = {
   loaded: false,
-  version: '1.0.0',
+  version: '0.0.1',
   gui: { s: Tachyons.styles, c: colors, z: Tachyons.sizes },
   isRefreshing: false, // true when we refresh the main Cities screen or a specific City screen
   isSearching: false, // true when we're looking up cities via the api
@@ -133,7 +133,10 @@ const SLookup = function* GLookup(action: ALookup) {
   // results.data is the reply from the api
   // results.data.list has the cities that match based on user input, let's pick only the fields we really need
   // this also handles the case where the api returns an empty list
-  const potentials = results.data.list.map(city => pick(city, ['id', 'name', 'coord', 'main', 'sys']))
+  const potentials = results.data.list.map(city => {
+    const { id, ...rest } = pick(city, ['id', 'name', 'coord', 'main', 'sys'])
+    return { id: id.toString(), ...rest }
+  })
 
   yield put(setPotentials(potentials))
   yield put(setSearching(false))

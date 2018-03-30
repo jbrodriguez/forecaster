@@ -13,7 +13,7 @@ type Props = {
   gui: TGui,
   city: TCity,
   unit: TTempUnit,
-  goTo: (id: number) => () => void,
+  goTo: (id: string) => () => void,
 }
 
 // CitiProxy represents a city in the Cities screen.

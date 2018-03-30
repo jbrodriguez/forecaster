@@ -62,7 +62,7 @@ export type TSys = {
 }
 
 export type TCity = {
-  id: number,
+  id: string,
   name: string,
   coord: TCoord,
   main: TMain,
@@ -79,7 +79,7 @@ export type TMeasure = {
 }
 
 export type TSetCityArg = {
-  id: number,
+  id: string,
   city: TCity,
 }
 
@@ -97,8 +97,8 @@ export type TEnvState = {
 
 export type TModelState = {
   cities: TCities | {},
-  order: number[],
-  current: number,
+  order: string[],
+  current: string,
 }
 
 export type TSettingsState = {
@@ -155,12 +155,12 @@ export type AAddCity = {
 
 export type ASetCurrentCity = {
   +type: typeof ActionKey.SET_CURRENT_CITY,
-  payload: number,
+  payload: string,
 }
 
 export type ADeleteCity = {
   +type: typeof ActionKey.DELETE_CITY,
-  payload: number,
+  payload: string,
 }
 
 export type ARefreshAll = {
@@ -174,7 +174,7 @@ export type ASetCity = {
 
 export type ARefreshCity = {
   +type: typeof ActionKey.REFRESH_CITY,
-  payload: number,
+  payload: string,
 }
 
 export type ASetTempUnit = {

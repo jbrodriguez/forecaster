@@ -21,7 +21,7 @@ type Props = {
   city: TCity,
   refreshing: boolean,
   tempUnit: TTempUnit,
-  refreshCity: (payload: number) => ARefreshCity,
+  refreshCity: (payload: string) => ARefreshCity,
 }
 
 class City extends PureComponent<Props> {

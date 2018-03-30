@@ -8,7 +8,7 @@ import { connect, Dispatch } from 'react-redux'
 import { NavigationActions } from 'react-navigation'
 import { SwipeListView } from 'react-native-swipe-list-view'
 
-import type { TCity, TGui, ASetRefreshing, ASetCurrentCity, ADeleteCity, ARefreshAll, TTempUnit } from '../typings'
+import type { TCity, TGui, ASetCurrentCity, ADeleteCity, ARefreshAll, TTempUnit } from '../typings'
 import { getGui, isRefreshing } from '../modules/env'
 import { citiesByOrder, setCurrentCity, deleteCity, refreshAll } from '../modules/model'
 import { getTempUnit } from '../modules/settings'
@@ -21,8 +21,8 @@ type Props = {
   gui: TGui,
   refreshing: boolean,
   tempUnit: TTempUnit,
-  setRefreshing: (payload: boolean) => ASetRefreshing,
-  setCurrentCity: (payload: number) => ASetCurrentCity,
+  // setRefreshing: (payload: boolean) => ASetRefreshing,
+  setCurrentCity: (payload: string) => ASetCurrentCity,
   deleteCity: (payload: number) => ADeleteCity,
   refreshAll: () => ARefreshAll,
   dispatch: Dispatch,
@@ -47,7 +47,7 @@ class Cities extends PureComponent<Props> {
     this.props.deleteCity(id)
   }
 
-  goTo = (id: number) => () => {
+  goTo = (id: string) => () => {
     const { cities } = this.props
 
     const city = cities.find(item => item.id === id)
@@ -65,7 +65,8 @@ class Cities extends PureComponent<Props> {
 
   renderHidden = (data, rowMap) => {
     const { gui: { s, c } } = this.props
-    const row = rowMap[data.item.id.toString()]
+    const row = rowMap[data.item.id]
+
     return (
       <View style={[s.flx_i, s.flx_row, s.aic, s.jcsb, c.g_background]}>
         <TouchableOpacity
@@ -107,7 +108,7 @@ class Cities extends PureComponent<Props> {
         <SwipeListView
           useFlatList
           data={cities}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.id}
           renderItem={this.renderRow}
           renderHiddenItem={this.renderHidden}
           refreshControl={
@@ -122,7 +123,6 @@ class Cities extends PureComponent<Props> {
               progressBackgroundColor={c.primary}
             />
           }
-          recalculateHiddenLayout
           leftOpenValue={75}
           disableLeftSwipe
         />
