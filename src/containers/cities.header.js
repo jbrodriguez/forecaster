@@ -12,12 +12,17 @@ import { getGui } from '../modules/env'
 type Props = {
   gui: TGui,
   search: () => Dispatch<any>,
+  settings: () => Dispatch<any>,
 }
 
-const HeaderRightBase = ({ gui: { s, c }, search }: Props) => (
+const HeaderRightBase = ({ gui: { s, c }, search, settings }: Props) => (
   <View style={[s.flx_row, s.aic]}>
     <TouchableOpacity onPress={search}>
       <Text style={[s.f2, s.mr2, c.c_secondary]}>+</Text>
+    </TouchableOpacity>
+    <View style={s.mr2} />
+    <TouchableOpacity onPress={settings}>
+      <Text style={[s.f4, s.mr2, c.c_secondary]}>S</Text>
     </TouchableOpacity>
   </View>
 )
@@ -28,6 +33,7 @@ const mapState = state => ({
 
 const mapDispatch = dispatch => ({
   search: () => dispatch(NavigationActions.navigate({ routeName: 'Search' })),
+  settings: () => dispatch(NavigationActions.navigate({ routeName: 'Settings' })),
 })
 
 export default connect(mapState, mapDispatch)(HeaderRightBase)
