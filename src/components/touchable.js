@@ -15,29 +15,29 @@ export default class Touchable extends PureComponent<Props> {
   render() {
     const { id, disabled, children } = this.props
 
-    if (Platform.OS === 'ios') {
-      return (
-        <TouchableOpacity onPress={this.props.goTo(id)} disabled={disabled}>
-          {children}
-        </TouchableOpacity>
-      )
-    }
-
-    // Platform.OS === 'android'
-    const API21 = Platform.Version >= 21
-
+    // if (Platform.OS === 'ios') {
     return (
-      <TouchableNativeFeedback
-        onPress={this.props.goTo(id)}
-        disabled={disabled}
-        background={
-          API21
-            ? TouchableNativeFeedback.SelectableBackgroundBorderless()
-            : TouchableNativeFeedback.SelectableBackground()
-        }
-      >
+      <TouchableOpacity onPress={this.props.goTo(id)} disabled={disabled}>
         {children}
-      </TouchableNativeFeedback>
+      </TouchableOpacity>
     )
+    // }
+
+    // // Platform.OS === 'android'
+    // const API21 = Platform.Version >= 21
+
+    // return (
+    //   <TouchableNativeFeedback
+    //     onPress={this.props.goTo(id)}
+    //     disabled={disabled}
+    //     background={
+    //       API21
+    //         ? TouchableNativeFeedback.SelectableBackgroundBorderless()
+    //         : TouchableNativeFeedback.SelectableBackground()
+    //     }
+    //   >
+    //     {children}
+    //   </TouchableNativeFeedback>
+    // )
   }
 }
