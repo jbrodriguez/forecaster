@@ -3,13 +3,16 @@
 import React, { PureComponent } from 'react'
 import { View, Text } from 'react-native'
 
-import type { TGui, TCity } from '../typings'
+import type { TGui, TCity, TTempUnit } from '../typings'
 
 import Touchable from './touchable'
+
+import { convertTemp } from '../lib/utils'
 
 type Props = {
   gui: TGui,
   city: TCity,
+  unit: TTempUnit,
   goTo: (id: number) => () => void,
 }
 
@@ -17,7 +20,10 @@ type Props = {
 // It displays just a summary of the information that a city contains.
 export default class CityProxy extends PureComponent<Props> {
   render() {
-    const { gui: { s, c }, city } = this.props
+    const { gui: { s, c }, city, unit } = this.props
+
+    const temp = convertTemp(city.main.temp, unit)
+    const unitIcon = unit === 'metric' ? '℃' : '℉'
 
     return (
       <Touchable id={city.id} disabled={false} goTo={this.props.goTo}>
@@ -36,7 +42,9 @@ export default class CityProxy extends PureComponent<Props> {
             <Text style={[s.f6, c.c_muted]}>({city.sys.country})</Text>
           </View>
 
-          <Text style={[s.tl, s.f6, c.c_muted]}>{city.main.temp}</Text>
+          <Text style={[s.tl, s.f6, c.c_muted]}>
+            {temp} {unitIcon}
+          </Text>
         </View>
       </Touchable>
     )

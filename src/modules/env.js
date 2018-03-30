@@ -94,6 +94,7 @@ export const getGui = (state: TAppState): TGui => state.env.gui
 export const isRefreshing = (state: TAppState): boolean => state.env.isRefreshing
 export const isSearching = (state: TAppState): boolean => state.env.isSearching
 export const getPotentials = (state: TAppState): TCity[] => state.env.potentials
+export const getVersion = (state: TAppState): string => state.env.version
 
 // SAGAS
 const SStart = function* GSStart() {
@@ -109,10 +110,12 @@ const SStart = function* GSStart() {
 
   const loaded = yield select(getLoaded)
   if (loaded) {
-    yield put(NavigationActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'Cities' })],
-    }))
+    yield put(
+      NavigationActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: 'Cities' })],
+      }),
+    )
   }
 }
 

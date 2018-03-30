@@ -24,6 +24,8 @@ import Cities from './cities'
 import Search from './search'
 import Welcome from './welcome'
 import City from './city'
+import Settings from './settings'
+import TempUnit from './settings.tunit'
 
 export const Navigator = StackNavigator(
   {
@@ -32,6 +34,8 @@ export const Navigator = StackNavigator(
     Search: { screen: Search },
     Welcome: { screen: Welcome },
     City: { screen: City },
+    Settings: { screen: Settings },
+    TempUnit: { screen: TempUnit },
   },
   {
     navigationOptions: {

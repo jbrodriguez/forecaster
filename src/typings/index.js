@@ -20,6 +20,8 @@ const ActionKey = {
   REFRESH_ALL: 'forecaster/model/REFRESH_ALL',
   SET_CITY: 'forecaster/model/SET_CITY',
   REFRESH_CITY: 'forecaster/model/REFRESH_CITY',
+
+  SET_TEMP_UNIT: 'forecaster/settings/SET_TEMP_UNIT',
 }
 
 export default ActionKey
@@ -81,6 +83,8 @@ export type TSetCityArg = {
   city: TCity,
 }
 
+export type TTempUnit = 'imperial' | 'metric'
+
 // STORE / STATE
 export type TEnvState = {
   loaded: boolean,
@@ -97,10 +101,15 @@ export type TModelState = {
   current: number,
 }
 
+export type TSettingsState = {
+  tempUnit: TTempUnit,
+}
+
 export type TAppState = {
   env: TEnvState,
   nav: NavigationState,
   model: TModelState,
+  settings: TSettingsState,
 }
 
 export type TStore = ReduxStore<TAppState>
@@ -166,4 +175,9 @@ export type ASetCity = {
 export type ARefreshCity = {
   +type: typeof ActionKey.REFRESH_CITY,
   payload: number,
+}
+
+export type ASetTempUnit = {
+  +type: typeof ActionKey.SET_TEMP_UNIT,
+  payload: TTempUnit,
 }

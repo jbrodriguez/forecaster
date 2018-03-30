@@ -12,11 +12,13 @@ import type { TStore } from './typings'
 import env from './modules/env'
 import nav from './modules/nav'
 import model from './modules/model'
+import settings from './modules/settings'
 
 const reducers = combineReducers({
   env,
   nav,
   model,
+  settings,
 })
 
 const configureStore = (callback: () => void): TStore => {
