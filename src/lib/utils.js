@@ -1,6 +1,6 @@
 // @flow
 
-import { TTempUnit } from '../typings'
+import type { TTempUnit } from '../typings'
 
 const find = /[!'()~]|%20|%00/g
 const replace = {

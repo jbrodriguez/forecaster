@@ -12,7 +12,7 @@ export const tempUnits = {
   metric: { label: 'Celsius', value: 'metric' },
 }
 
-const initialState: TSettingsState = {
+export const initialState: TSettingsState = {
   tempUnit: 'metric',
 }
 

@@ -1,0 +1,167 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Gauge renders correctly - hero 1`] = `
+<View
+  style={
+    Object {
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "flexDirection": "row",
+        },
+        Object {
+          "alignItems": "center",
+        },
+        Object {
+          "justifyContent": "center",
+        },
+      ]
+    }
+  >
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+      style={
+        Array [
+          Object {
+            "fontSize": 24,
+          },
+          Object {
+            "color": "#ffffff",
+          },
+        ]
+      }
+    >
+      32
+    </Text>
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+      style={
+        Array [
+          Object {
+            "fontSize": 16,
+          },
+          Object {
+            "color": "rgba(255,255,255,0.7)",
+          },
+        ]
+      }
+    >
+      metric
+    </Text>
+  </View>
+  <View>
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+      style={
+        Array [
+          Object {
+            "fontSize": 16,
+          },
+          Object {
+            "textAlign": "center",
+          },
+          Object {
+            "color": "#CBC52A",
+          },
+        ]
+      }
+    >
+      temperature
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`Gauge renders correctly - nohero 1`] = `
+<View
+  style={
+    Object {
+      "justifyContent": "center",
+    }
+  }
+>
+  <View
+    style={
+      Array [
+        Object {
+          "flexDirection": "row",
+        },
+        Object {
+          "alignItems": "center",
+        },
+        Object {
+          "justifyContent": "center",
+        },
+      ]
+    }
+  >
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+      style={
+        Array [
+          Object {
+            "fontSize": 20,
+          },
+          Object {
+            "color": "#B9BCC0",
+          },
+        ]
+      }
+    >
+      32
+    </Text>
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+      style={
+        Array [
+          Object {
+            "fontSize": 16,
+          },
+          Object {
+            "color": "#878D93",
+          },
+        ]
+      }
+    >
+      metric
+    </Text>
+  </View>
+  <View>
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+      style={
+        Array [
+          Object {
+            "fontSize": 16,
+          },
+          Object {
+            "textAlign": "center",
+          },
+          Object {
+            "color": "#2F3B46",
+          },
+        ]
+      }
+    >
+      temperature
+    </Text>
+  </View>
+</View>
+`;

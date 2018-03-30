@@ -15,7 +15,7 @@ type Props = {
   settings: () => Dispatch<any>,
 }
 
-const HeaderRightBase = ({ gui: { s, c }, search, settings }: Props) => (
+export const HeaderRightBase = ({ gui: { s, c }, search, settings }: Props) => (
   <View style={[s.flx_row, s.aic]}>
     <TouchableOpacity onPress={search}>
       <Text style={[s.f2, s.mr2, c.c_secondary]}>+</Text>

@@ -2,7 +2,8 @@
 
 import { StyleSheet } from 'react-native'
 
-import { takeLatest, put, select, call } from 'redux-saga/effects'
+import type { Saga } from 'redux-saga'
+import { takeLatest, put, call } from 'redux-saga/effects'
 import { NavigationActions } from 'react-navigation'
 import Tachyons from 'react-native-style-tachyons'
 import pick from 'lodash.pick'
@@ -37,7 +38,7 @@ export const setPotentials = (payload: TCity[]): ASetPotentials => ({ type: Acti
 Tachyons.build({ rem: 16 }, StyleSheet)
 
 // REDUCER
-const initialState: TEnvState = {
+export const initialState: TEnvState = {
   loaded: false,
   version: '1.0.0',
   gui: { s: Tachyons.styles, c: colors, z: Tachyons.sizes },
@@ -97,7 +98,7 @@ export const getPotentials = (state: TAppState): TCity[] => state.env.potentials
 export const getVersion = (state: TAppState): string => state.env.version
 
 // SAGAS
-const SStart = function* GSStart() {
+export const SStart = function* GSStart(): Saga<void> {
   // // get binary version info from the device itself ...
   // let version = DeviceInfo.getVersion()
   // if (codePushUpdateMetadata) {
@@ -105,18 +106,14 @@ const SStart = function* GSStart() {
   //  version = codePushUpdateMetadata.description
   // }
   const version = '1.0.0'
-
   yield put(setup({ version }))
 
-  const loaded = yield select(getLoaded)
-  if (loaded) {
-    yield put(
-      NavigationActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: 'Cities' })],
-      }),
-    )
-  }
+  yield put(
+    NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Cities' })],
+    }),
+  )
 }
 
 // This handles the debounced input from the user, when searching for a city name in the Search screen
