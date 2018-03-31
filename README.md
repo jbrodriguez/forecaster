@@ -44,6 +44,7 @@ An elegant solution to remove a key from an object
 # Extra Features
 
 - Allow users to choose the unit to display temperature (either Celsius or Fahrenheit). This is persisted to local storage.
+- Display the local time for any selected city. This is refreshed each time the detail screen (City) is entered and whenever the user refreshes the data (pull down)
 
 # Issues
 
