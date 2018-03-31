@@ -20,6 +20,7 @@ const ActionKey = {
   REFRESH_ALL: 'forecaster/model/REFRESH_ALL',
   SET_CITY: 'forecaster/model/SET_CITY',
   REFRESH_CITY: 'forecaster/model/REFRESH_CITY',
+  UPDATE_TIME: 'forecaster/env/UPDATE_TIME',
 
   SET_TEMP_UNIT: 'forecaster/settings/SET_TEMP_UNIT',
 }
@@ -67,6 +68,8 @@ export type TCity = {
   coord: TCoord,
   main: TMain,
   sys: TSys,
+  timestamp: number,
+  timeZoneId: string,
 }
 
 export type TCities = {
@@ -180,4 +183,9 @@ export type ARefreshCity = {
 export type ASetTempUnit = {
   +type: typeof ActionKey.SET_TEMP_UNIT,
   payload: TTempUnit,
+}
+
+export type AUpdateTime = {
+  +type: typeof ActionKey.UPDATE_TIME,
+  payload: TCity,
 }

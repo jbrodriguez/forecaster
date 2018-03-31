@@ -2,6 +2,7 @@
 
 import { takeLatest, put, select, call, fork, all } from 'redux-saga/effects'
 import pick from 'lodash.pick'
+import { DateTime } from 'luxon'
 
 import ActionKey from '../typings'
 import type {
@@ -16,8 +17,9 @@ import type {
   TSetCityArg,
   ASetCity,
   ARefreshCity,
+  AUpdateTime,
 } from '../typings'
-import { getCity } from '../lib/api'
+import { getCity, getTime } from '../lib/api'
 
 // ACTION CREATORS
 
@@ -27,6 +29,7 @@ export const deleteCity = (payload: string): ADeleteCity => ({ type: ActionKey.D
 export const refreshAll = (): ARefreshAll => ({ type: ActionKey.REFRESH_ALL })
 export const setCity = (payload: TSetCityArg): ASetCity => ({ type: ActionKey.SET_CITY, payload })
 export const refreshCity = (payload: string): ARefreshCity => ({ type: ActionKey.REFRESH_CITY, payload })
+export const updateTime = (payload: TCity): AUpdateTime => ({ type: ActionKey.UPDATE_TIME, payload })
 
 // REDUCER
 const initialState: TModelState = {
@@ -127,18 +130,33 @@ export default reducer
 export const citiesByOrder = (state: TAppState): TCity[] => state.model.order.map(id => state.model.cities[id])
 export const getCurrent = (state: TAppState): TCity => state.model.cities[state.model.current]
 export const getIds = (state: TAppState): string[] => state.model.order
+export const getById = (state: TAppState, id: string): TCity => state.model.cities[id]
 
 // SAGAS
 function* refreshOne(cityId: string) {
-  const result = yield call(getCity, cityId)
-  if (result.err) {
+  const byId: TCity = yield select(getById, cityId)
+
+  const [weather, time] = yield all([call(getCity, cityId), call(getTime, byId.coord)])
+  if (weather.err) {
+    // Handle only the case where weather has an error, if there's an error getting the time
+    // we'll just set it to zero
     // TODO: handle error here, set an error prop to show a toast
     // yield put(setRefreshing(false))
     return
   }
 
-  const { id, ...rest } = pick(result.data, ['id', 'name', 'coord', 'main', 'sys'])
-  const city = { id: id.toString(), ...rest }
+  const local = DateTime.local()
+  let timezone = local.zoneName
+  let timestamp = Math.round(local.valueOf() / 1000)
+
+  if (!time.err) {
+    const { now, timeZoneId } = time.data
+    timestamp = now
+    timezone = timeZoneId
+  }
+
+  const { id, ...rest } = pick(weather.data, ['id', 'name', 'coord', 'main', 'sys'])
+  const city = { id: id.toString(), ...rest, timestamp, timeZoneId: timezone }
 
   yield put(setCity({ id, city }))
 }
@@ -158,7 +176,31 @@ const SRefreshAll = function* GRefreshAll() {
   yield all(calls)
 }
 
+const SUpdateTime = function* GUpdateTime(action: AUpdateTime) {
+  const city = action.payload
+
+  const result = yield call(getTime, city.coord)
+  if (result.err) {
+    // TODO: handle error here, set an error prop to show a toast
+    // yield put(setRefreshing(false))
+    return
+  }
+
+  // {
+  //    "dstOffset" : 0,
+  //    "rawOffset" : -28800,
+  //    "status" : "OK",
+  //    "timeZoneId" : "America/Los_Angeles",
+  //    "timeZoneName" : "Pacific Standard Time"
+  //    "now" : 1331161200
+  // }
+  const { now, timeZoneId } = result.data
+
+  yield put(setCity({ id: city.id, city: { ...city, timestamp: now, timeZoneId } }))
+}
+
 export const sagas = {
   refreshAll: takeLatest(ActionKey.REFRESH_ALL, SRefreshAll),
   refreshCity: takeLatest(ActionKey.REFRESH_CITY, SRefreshCity),
+  updateTime: takeLatest(ActionKey.UPDATE_TIME, SUpdateTime),
 }
