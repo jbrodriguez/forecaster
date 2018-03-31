@@ -7,14 +7,14 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import MapView, { Marker } from 'react-native-maps'
 
-import type { TGui, TAppState, TCity, ARefreshCity, TTempUnit } from '../typings'
-import { getCurrent, refreshCity } from '../modules/model'
+import type { TGui, TAppState, TCity, ARefreshCity, TTempUnit, AUpdateTime } from '../typings'
+import { getCurrent, refreshCity, updateTime } from '../modules/model'
 import { getGui, isRefreshing } from '../modules/env'
 import { getTempUnit } from '../modules/settings'
 
 import Gauge from '../components/gauge'
 
-import { convertTemp } from '../lib/utils'
+import { convertTemp, timeFromTimestamp } from '../lib/utils'
 
 type Props = {
   gui: TGui,
@@ -22,6 +22,7 @@ type Props = {
   refreshing: boolean,
   tempUnit: TTempUnit,
   refreshCity: (payload: string) => ARefreshCity,
+  updateTime: (payload: TCity) => AUpdateTime,
 }
 
 class City extends PureComponent<Props> {
@@ -34,6 +35,10 @@ class City extends PureComponent<Props> {
     this.props.refreshCity(city.id)
   }
 
+  componentDidMount() {
+    this.props.updateTime(this.props.city)
+  }
+
   render() {
     const { gui: { s, c }, refreshing, city, tempUnit } = this.props
 
@@ -44,6 +49,8 @@ class City extends PureComponent<Props> {
     const max = convertTemp(city.main.temp_max, tempUnit)
 
     const unitIcon = tempUnit === 'metric' ? '℃' : '℉'
+
+    const { hours, minutes } = timeFromTimestamp(city.timestamp, city.timeZoneId)
 
     return (
       <ScrollView
@@ -62,7 +69,18 @@ class City extends PureComponent<Props> {
         }
       >
         <View style={[s.jcsb, s.pa2]}>
-          <View style={[s.flx_row, s.aic, s.jcsb]}>
+          <View style={[s.flx_row, s.aic, s.jcsb, s.mt2]}>
+            <View style={[s.flx_row, s.aic]}>
+              <Text style={[s.tl, s.f6, c.c_background]}>placeholder</Text>
+            </View>
+            <View style={[s.flx_row, s.aic]}>
+              <Text style={[s.tc, s.f5, c.c_accent]}>{hours}</Text>
+              <Text style={[s.tc, s.f6, c.c_muted]}>:</Text>
+              <Text style={[s.tl, s.f5, c.c_accent]}>{minutes}</Text>
+            </View>
+          </View>
+
+          <View style={[s.flx_row, s.aic, s.jcsb, s.mt3]}>
             <Gauge gui={this.props.gui} measure={{ value: min.toString(), unit: unitIcon }} caption="min" />
 
             <Gauge
@@ -89,7 +107,7 @@ class City extends PureComponent<Props> {
           </View>
 
           <MapView
-            style={[s.mt2, { height: 250 }]}
+            style={[s.mt3, { height: 250 }]}
             region={{
               latitude: city.coord.lat,
               longitude: city.coord.lon,
@@ -115,6 +133,6 @@ const mapStateToProps = (state: TAppState) => ({
   refreshing: isRefreshing(state),
   tempUnit: getTempUnit(state),
 })
-const mapDispatchToProps = dispatch => bindActionCreators({ refreshCity }, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({ refreshCity, updateTime }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(City)

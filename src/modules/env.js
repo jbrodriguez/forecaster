@@ -7,6 +7,7 @@ import { takeLatest, put, call } from 'redux-saga/effects'
 import { NavigationActions } from 'react-navigation'
 import Tachyons from 'react-native-style-tachyons'
 import pick from 'lodash.pick'
+import { DateTime } from 'luxon'
 
 import ActionKey from '../typings'
 import type {
@@ -130,12 +131,16 @@ const SLookup = function* GLookup(action: ALookup) {
     return
   }
 
+  const now = DateTime.local()
+  const tz = now.zoneName
+  const timestamp = Math.round(now.valueOf() / 1000)
+
   // results.data is the reply from the api
   // results.data.list has the cities that match based on user input, let's pick only the fields we really need
   // this also handles the case where the api returns an empty list
   const potentials = results.data.list.map(city => {
     const { id, ...rest } = pick(city, ['id', 'name', 'coord', 'main', 'sys'])
-    return { id: id.toString(), ...rest }
+    return { id: id.toString(), ...rest, timestamp, timeZoneId: tz }
   })
 
   yield put(setPotentials(potentials))

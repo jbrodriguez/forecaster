@@ -10,6 +10,7 @@ const sagas = function* GSagas(): any {
 
   yield model.refreshAll
   yield model.refreshCity
+  yield model.updateTime
 }
 
 export default sagas

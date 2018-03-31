@@ -1,13 +1,17 @@
 // @flow
 
+import type { TCoord } from '../typings'
 import { encode } from './utils'
 // import getCityData from './getCityData'
 // import lookupCityData from './lookupCitiData'
 
 // TODO: need to securely handle the key
 const apiKey = 'b20d1d6a3b21c464c97f24de370a9a01'
+const timeKey = 'AIzaSyC8gP2BtqjlR4mVCwY8MgPh7U02av2sjdY'
+
 const lookupUrl = 'https://api.openweathermap.org/data/2.5/find?'
 const getUrl = 'https://api.openweathermap.org/data/2.5/weather?'
+const timeUrl = 'https://maps.googleapis.com/maps/api/timezone/json?'
 
 function CodeException(message, code) {
   this.name = 'CodeException'
@@ -26,6 +30,14 @@ const checkStatus = response => {
     default:
       throw new CodeException('Network error', response.status) // TODO: return error message from api
   }
+}
+
+const checkTimeStatus = response => {
+  if (response.status >= 200 && response.status < 300) {
+    return response.json()
+  }
+
+  throw new CodeException('Network error', response.status) // TODO: return error message from api
 }
 
 const raiseException = exception => ({ data: null, err: { err_code: exception.code, err_msg: exception.message } })
@@ -63,4 +75,21 @@ const getCity = (id: string) => {
   // return { data: city, err: null }
 }
 
-export { lookupCity, getCity } // eslint-disable-line import/prefer-default-export
+const getTime = (coord: TCoord) => {
+  const now = Math.round(new Date().getTime() / 1000)
+
+  const params = encode({
+    location: `${coord.lat},${coord.lon}`,
+    timestamp: `${now}`,
+    key: timeKey,
+  })
+
+  const ep = `${timeUrl}${params}`
+
+  return fetch(ep)
+    .then(checkTimeStatus)
+    .then(data => ({ data: { ...data, now }, err: null }))
+    .catch(raiseException)
+}
+
+export { lookupCity, getCity, getTime } // eslint-disable-line import/prefer-default-export

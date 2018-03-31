@@ -1,7 +1,7 @@
 // @flow
 
 import React, { PureComponent } from 'react'
-import { View, TouchableOpacity, Text, RefreshControl, Platform } from 'react-native'
+import { View, TouchableOpacity, Text, RefreshControl, Platform, InteractionManager } from 'react-native'
 
 import { bindActionCreators } from 'redux'
 import { connect, Dispatch } from 'react-redux'
@@ -48,17 +48,19 @@ class Cities extends PureComponent<Props> {
   }
 
   goTo = (id: string) => () => {
-    const { cities } = this.props
+    InteractionManager.runAfterInteractions(() => {
+      const { cities } = this.props
 
-    const city = cities.find(item => item.id === id)
+      const city = cities.find(item => item.id === id)
 
-    // this shouldn't happen, since we're selecting an item from the cities array
-    if (!city) {
-      return
-    }
+      // this shouldn't happen, since we're selecting an item from the cities array
+      if (!city) {
+        return
+      }
 
-    this.props.setCurrentCity(id)
-    this.props.dispatch(NavigationActions.navigate({ routeName: 'City', params: { title: city.name } }))
+      this.props.setCurrentCity(id)
+      this.props.dispatch(NavigationActions.navigate({ routeName: 'City', params: { title: city.name } }))
+    })
   }
 
   renderRow = data => <CityProxy gui={this.props.gui} city={data.item} goTo={this.goTo} unit={this.props.tempUnit} />
